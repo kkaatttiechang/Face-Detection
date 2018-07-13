@@ -1,0 +1,25 @@
+#!/usr/bin/python
+
+from imutils import face_utils
+import numpy as np
+import imutils
+import dlib
+import cv2
+
+video= cv2.VideoCapture("/home/katiechang/Documents/Programs/mile.mp4")
+detector = dlib.get_frontal_face_detector()
+predictor = dlib.shape_predictor("/home/katiechang/Documents/Programs/FaceLandmark/shape_predictor_68_face_landmarks.dat")
+while True:
+    rval, frame= video.read()
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    rects = detector(gray,0)
+    for rect in rects:
+        shape = predictor(gray,rect)
+        shape = face_utils.shape_to_np(shape)
+        for (x,y) in shape:
+            cv2.circle(frame, (x,y), 1, (100, 400, 0), -1)
+    cv2.imshow("Face Landmark", frame)
+    key = cv2.waitKey(1)
+    if key == 27:
+        break
+cv2.destroyAllWindows()

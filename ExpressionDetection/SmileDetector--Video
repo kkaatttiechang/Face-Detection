@@ -1,0 +1,28 @@
+#!/usr/bin/python
+
+import cv2
+
+video= cv2.VideoCapture("/home/katiechang/Documents/Programs/mile.mp4")
+frontalfcascade = cv2.CascadeClassifier('/home/katiechang/Documents/opencv/data/haarcascades/haarcascade_frontalface_default.xml')
+smilecascade = cv2.CascadeClassifier('/home/katiechang/Documents/opencv/data/haarcascades/haarcascade_smile.xml')
+
+
+while True:
+    rval,frame = video.read()
+    gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+    faces = frontalfcascade.detectMultiScale(gray,scaleFactor=1.1, minNeighbors=11,minSize=(55,55),flags=cv2.COLOR_BGR2GRAY)
+
+    for(x,y,w,h) in faces:
+        cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),2)
+        roigray=gray[y:y+h, x:x+w]
+        roicolor=frame[y:y+h,x:x+w]
+        smile=smilecascade.detectMultiScale(roigray, scaleFactor=1.4, minNeighbors=21, minSize=(25,25),flags=cv2.COLOR_BGR2GRAY)
+        for(x2,y2,w2,h2) in smile:
+            print"found", len(smile),"smiles"
+            cv2.rectangle(roicolor,(x2,y2),(x2+w2,y2+h2),(255,0,0),1)
+
+
+    cv2.imshow("smile detector", frame)
+    key = cv2.waitKey(20)
+    if key == 27:
+        break
